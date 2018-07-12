@@ -115,6 +115,34 @@ class ScalaAotCompletionTest extends ScalaCodeInsightTestBase {
     itemText = "foo: Foo"
   )
 
+  def testSequence(): Unit = doAotCompletionTest(
+    fileText =
+      s"""class FooBar
+         |def foo(ba$CARET)
+       """.stripMargin,
+    resultText =
+      s"""class FooBar
+         |def foo(bars: Seq[FooBar]$CARET)
+       """.stripMargin,
+    lookupString = "Seq",
+    itemText = "bars: Seq[FooBar]",
+    tailTextSuffix = null
+  )
+
+  def testOption(): Unit = doAotCompletionTest(
+    fileText =
+      s"""class FooBar
+         |def foo(ba$CARET)
+       """.stripMargin,
+    resultText =
+      s"""class FooBar
+         |def foo(maybeBar: Option[FooBar]$CARET)
+       """.stripMargin,
+    lookupString = "Option",
+    itemText = "maybeBar: Option[FooBar]",
+    tailTextSuffix = null
+  )
+
   private def doAotCompletionTest(fileText: String,
                                   resultText: String,
                                   lookupString: String,

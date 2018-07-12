@@ -7,8 +7,9 @@ import com.intellij.codeInsight.lookup._
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.patterns.PlatformPatterns
-import com.intellij.psi.PsiElement
+import com.intellij.psi.{PsiClass, PsiElement}
 import com.intellij.util.{Consumer, ProcessingContext}
+import org.atteo.evo.inflector.English
 import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.psi.ScalaPsiElement
@@ -55,6 +56,33 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
           origin = identifier.getTextRange.getEndOffset
         } yield new TextRange(origin, bound)
 
+        private val maybeOptionClass = findClass("scala.Option")
+        private val maybeSeqClass = findClass("scala.collection.Seq")
+
+        override def consume(result: CompletionResult): Unit = {
+          super.consume(result)
+
+          val lookupString = result.getLookupElement.getLookupString
+
+          def consumeSyntheticLookup(clazz: PsiClass)
+                                    (function: String => String): Unit = {
+            val parameterName = itemText(lookupString)(function)
+            val typeText = clazz.name + '[' + lookupString + ']'
+
+            val lookupElement = LookupElementBuilder.create(clazz)
+              .withLookupString(lookupString)
+            consume(lookupElement, parameterName + Delimiter + typeText)
+          }
+
+          maybeOptionClass.foreach {
+            consumeSyntheticLookup(_)("maybe" + _)
+          }
+
+          maybeSeqClass.foreach {
+            consumeSyntheticLookup(_)(English.plural)
+          }
+        }
+
         override protected def createInsertHandler(itemText: String): AotInsertHandler = new AotInsertHandler(itemText) {
 
           private val delta = itemText.indexOf(Delimiter) + Delimiter.length
@@ -88,6 +116,10 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
 
         override protected def suggestItemText(lookupString: String): String =
           typedItemText(lookupString)
+
+        private def findClass(fqn: String)
+                             (implicit position: PsiElement) =
+          position.elementScope.getCachedClass(fqn)
       }
     }
   )
@@ -125,7 +157,7 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
           if (consumed.add(itemText)) super.consume(lookupElement, itemText)
         }
 
-        override protected def suggestItemText(lookupString: String): String = itemText(lookupString)
+        override protected def suggestItemText(lookupString: String): String = itemText(lookupString)()
 
         override protected def createRenderer(itemText: String): AotLookupElementRenderer = new AotLookupElementRenderer(itemText) {
 
@@ -216,15 +248,19 @@ object ScalaAotCompletionContributor {
 
     protected def suggestItemText(lookupString: String): String
 
-    protected final def itemText(lookupString: String): String = decapitalize(
-      lookupString.indexOf(targetPrefix) match {
-        case -1 => lookupString
-        case index => lookupString.substring(index)
-      }
-    )
+    protected final def itemText(lookupString: String)
+                                (function: String => String = identity): String =
+      decapitalize(
+        function(
+          lookupString.indexOf(targetPrefix) match {
+            case -1 => lookupString
+            case index => lookupString.substring(index)
+          }
+        )
+      )
 
     protected final def typedItemText(lookupString: String): String =
-      itemText(lookupString) + Delimiter + lookupString
+      itemText(lookupString)() + Delimiter + lookupString
   }
 
   private[completion] class AotLookupElementRenderer(itemText: String) extends LookupElementRenderer[Decorator] {
