@@ -58,7 +58,7 @@ object BspCommunication {
     val connector =
       if (bloopConfigDir.exists()) new BloopConnector(bspExecutionSettings.bloopExecutable, base, initParams)
       else {
-        // TODO need a protocol to detect generic bsp server
+        // TODO configuration for generic BSP server
         new GenericConnector(base, initParams)
       }
 
