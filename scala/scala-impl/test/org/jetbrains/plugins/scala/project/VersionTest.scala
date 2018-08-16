@@ -12,25 +12,27 @@ import org.junit.Test
 class VersionTest {
   @Test
   def parsing(): Unit = {
-    assertEquals("", Version("").toString)
+    assertEquals("0", Version("").toNumericString)
 
-    assertEquals("0", Version("0").toString)
-    assertEquals("0.0", Version("0.0").toString)
+    assertEquals("0", Version("0").toNumericString)
+    assertEquals("0.0", Version("0.0").toNumericString)
 
-    assertEquals("1", Version("1").toString)
-    assertEquals("1.0", Version("1.0").toString)
-    assertEquals("1.2", Version("1.2").toString)
-    assertEquals("1.2.3", Version("1.2.3").toString)
+    assertEquals("1", Version("1").toNumericString)
+    assertEquals("1.0", Version("1.0").toNumericString)
+    assertEquals("1.2", Version("1.2").toNumericString)
+    assertEquals("1.2.3", Version("1.2.3").toNumericString)
 
-    assertEquals("1-0", Version("1-0").toString)
-    assertEquals("1-2", Version("1-2").toString)
-    assertEquals("1-2-3", Version("1-2-3").toString)
+    assertEquals("1-0", Version("1-0").toNumericString)
+    assertEquals("1-2", Version("1-2").toNumericString)
+    assertEquals("1-2-3", Version("1-2-3").toNumericString)
 
-    assertEquals("1.2.3-4.5.6", Version("1.2.3-4.5.6").toString)
+    assertEquals("1.2.3-4.5.6", Version("1.2.3-4.5.6").toNumericString)
 
-    assertEquals("1.2", Version("1M2").toString)
+    assertEquals("1.2", Version("1M2").toNumericString)
 
-    assertEquals("20100817020148", Version("20100817020148").toString)
+    assertEquals("20100817020148", Version("20100817020148").toNumericString)
+
+    assertEquals("1.2.3-0", Version("1.2.3-SNAPSHOT").toNumericString)
   }
 
   @Test

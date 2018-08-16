@@ -37,7 +37,9 @@ case class Version(presentation: String) extends Ordered[Version] {
   def inRange(atLeast: Version, lessThan: Version): Boolean =
     this >= atLeast && this < lessThan
 
-  override def toString: String = groups.map(_.toString).mkString("-")
+  def toNumericString: String = groups.map(_.toString).mkString("-")
+
+  override def toString: String = presentation
 }
 
 object Version {
@@ -56,17 +58,16 @@ private case class Group(numbers: Seq[Long]) extends Comparable[Group] {
       essentialNumbers.lengthCompare(other.essentialNumbers.length) >= 0
   }
 
-  override def toString: String = numbers.mkString(".")
+  override def toString: String =
+    if (numbers.isEmpty) "0"
+    else numbers.mkString(".")
 }
 
 private object Group {
   private val IntegerPattern = "\\d+".r
 
-
-
   def apply(presentation: String): Group =
     Group(IntegerPattern.findAllIn(presentation).map(_.toLong).toList)
-
 }
 
 private object VersionUtil {
