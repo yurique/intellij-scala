@@ -80,6 +80,7 @@ public class ScalaProjectSettingsPanel {
     private JComboBox trailingCommasComboBox;
     private JCheckBox collapseWorksheetFoldByCheckBox;
     private JCheckBox showNotFoundImplicitArgumentsCheckBox;
+    private JCheckBox enableLocalDepIndex;
     private ScalaUiWithDependency.ComponentWithSettings injectionPrefixTable;
     private Project myProject;
 
@@ -203,6 +204,8 @@ public class ScalaProjectSettingsPanel {
         scalaProjectSettings.setScalaMetaMode((ScalaProjectSettings.ScalaMetaMode) scalaMetaMode.getModel().getSelectedItem());
         scalaProjectSettings.setMetaTrimMethodBodies(metaTrimBodies.isSelected());
 
+        scalaProjectSettings.setEnableLocalDependencyIndexing(enableLocalDepIndex.isSelected());
+
         scalaProjectSettings.setScFileMode(ScalaProjectSettings.ScFileMode.valueOf(scTypeSelectionCombobox.getSelectedItem().toString()));
         scalaProjectSettings.setTrailingCommasMode(ScalaProjectSettings.TrailingCommasMode.valueOf(trailingCommasComboBox.getSelectedItem().toString()));
 
@@ -320,6 +323,8 @@ public class ScalaProjectSettingsPanel {
 
         if (scalaProjectSettings.isEnableLibraryExtensions() != extensionsPanel.enabledCB().isSelected()) return true;
 
+        if (scalaProjectSettings.isEnableLocalDependencyIndexing() != enableLocalDepIndex.isSelected()) return true;
+
         return false;
     }
 
@@ -388,6 +393,8 @@ public class ScalaProjectSettingsPanel {
         setValue(metaTrimBodies, scalaProjectSettings.isMetaTrimMethodBodies());
 
         setValue(extensionsPanel.enabledCB(), scalaProjectSettings.isEnableLibraryExtensions());
+
+        setValue(enableLocalDepIndex, scalaProjectSettings.isEnableLocalDependencyIndexing());
     }
 
     private int getWorksheetDelay() {
