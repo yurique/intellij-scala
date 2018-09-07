@@ -61,7 +61,10 @@ object Common {
       .dependsOn(from % Provided)
       .settings(
         dumpDependencyStructure := null, // avoid cyclic dependencies on products task
-        products := packagePlugin.in(from).value :: Nil,
+        products := {
+          val outDir = packagePluginDynamic.in(from).value
+          outDir :: Nil
+        },
         packageMethod := org.jetbrains.sbtidea.Keys.PackagingMethod.Skip(),
         unmanagedJars in Compile := ideaMainJars.value,
         unmanagedJars in Compile += file(System.getProperty("java.home")).getParentFile / "lib" / "tools.jar"
