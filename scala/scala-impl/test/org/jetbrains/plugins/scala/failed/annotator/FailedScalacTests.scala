@@ -146,7 +146,6 @@ class MacrosFailedScalacTests extends FailedScalacTestsBase {
 
   def test_t8781(): Unit = doTest()
   def test_t8934a(): Unit = doTest()
-  def test_t8523(): Unit = doTest()
 }
 
 //these tests pass locally but sometimes fail on teamcity
