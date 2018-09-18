@@ -1,7 +1,8 @@
 package org.jetbrains.plugins.scala.failed.checkAccess
 
+import com.intellij.testFramework.fixtures.CodeInsightTestFixture.CARET_MARKER
 import org.jetbrains.plugins.scala.PerfCycleTests
-import org.jetbrains.plugins.scala.lang.checkers.checkPrivateAccess.CheckPrivateAccessTestBase
+import org.jetbrains.plugins.scala.failed.annotator.BadCodeGreenTestBase
 import org.junit.experimental.categories.Category
 
 /**
@@ -9,10 +10,16 @@ import org.junit.experimental.categories.Category
   * Date: 22.03.16.
   */
 @Category(Array(classOf[PerfCycleTests]))
-class CheckAccessTest extends CheckPrivateAccessTestBase {
+class CheckAccessTest extends BadCodeGreenTestBase {
   override def shouldPass: Boolean = false
 
-  override def folderPath: String = super.folderPath + "failed/"
-
-  def testSCL9212() = doTest()
+  def testSCL9212() = {
+    val text =
+      s"""
+         |class A(name:String) {
+         |  def f(a: A) = a.${CARET_MARKER}name
+         |}
+      """.stripMargin
+    doTest(text)
+  }
 }
