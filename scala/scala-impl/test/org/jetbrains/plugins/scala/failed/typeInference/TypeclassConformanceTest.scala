@@ -26,7 +26,7 @@ class TypeclassConformanceTest extends TypeConformanceTestBase {
        |  def withInstance(y: String)(implicit ev: SingletonS[y.type]): ev.A = ev.create
        |  ${caretMarker}val z: Int = withInstance(x)
        |}
-       |//true
+       |//Int
        """.stripMargin)
 
   def testSCL10850(): Unit = doTest(
@@ -49,6 +49,6 @@ class TypeclassConformanceTest extends TypeConformanceTestBase {
        |  def foo[T](t: T)(implicit f: Foo[T] = fooId[T]): f.B = f(t)
        |
        |  ${caretMarker}val test: String = foo("Some String")
-       |//true
+       |//String
        """.stripMargin)
 }
