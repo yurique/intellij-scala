@@ -153,7 +153,4 @@ class MacrosFailedScalacTests extends FailedScalacTestsBase {
 @Category(Array(classOf[PerfCycleTests]))
 class FlakyScalacTests extends FailedScalacTestsBase {
   override def testDirName = "flaky"
-
-  def test_t7516(): Unit = doTest()
-  def `test_annotated-treecopy`(): Unit = doTest()
 }
