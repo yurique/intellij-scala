@@ -149,7 +149,8 @@ class MacrosFailedScalacTests extends FailedScalacTestsBase {
 }
 
 //these tests pass locally but sometimes fail on teamcity
-@Category(Array(classOf[PerfCycleTests]))
-class FlakyScalacTests extends FailedScalacTestsBase {
-  override def testDirName = "flaky"
-}
+//commented as we haven't flaky tests at the moment
+//@Category(Array(classOf[PerfCycleTests]))
+//class FlakyScalacTests extends FailedScalacTestsBase {
+//  override def testDirName = "flaky"
+//}
