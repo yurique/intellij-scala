@@ -73,7 +73,7 @@ class SbtRunConfiguration(val project: Project, val configurationFactory: Config
     EnvironmentVariablesComponent.readExternal(element, environmentVariables)
   }
 
-  override def isCompileBeforeLaunchAddedByDefault: Boolean = false
+  override def isBuildBeforeLaunchAddedByDefault: Boolean = false
 
   def apply(params: SbtRunConfigurationForm): Unit = {
     tasks = params.getTasks

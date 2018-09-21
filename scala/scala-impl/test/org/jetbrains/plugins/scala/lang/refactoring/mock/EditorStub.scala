@@ -116,11 +116,17 @@ class EditorStub extends Editor {
 
     override def addListener(listener: Listener, disposable: Disposable): Unit = {}
 
-    override def getInlineElementsInRange(i: Int, i1: Int): util.List[Inlay] = util.Arrays.asList()
+    override def getInlineElementsInRange(i: Int, i1: Int): util.List[Inlay] = util.Collections.emptyList()
 
     override def getElementAt(point: Point): Inlay = null
 
     override def getInlineElementAt(visualPosition: VisualPosition): Inlay = null
+
+    override def addBlockElement(i: Int, b: Boolean, b1: Boolean, i1: Int, editorCustomElementRenderer: EditorCustomElementRenderer): Inlay = null
+
+    override def getBlockElementsInRange(i: Int, i1: Int): util.List[Inlay] = util.Collections.emptyList()
+
+    override def getBlockElementsForVisualLine(i: Int, b: Boolean): util.List[Inlay] = util.Collections.emptyList()
   }
 
   override def xyToVisualPosition(p: Point2D): VisualPosition = null
