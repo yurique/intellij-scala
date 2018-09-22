@@ -31,7 +31,7 @@ abstract class FailedScalacTestsBase extends ScalacTestdataHighlightingTestBase 
     getTestName(true) match {
       case "_t7232c" => Map("Test.scala" -> Set())
       case "_t7364b" => Map("UseIt_2.scala" -> Set((68, 79), (56, 64)))
-      case "_t4365" => Map("a_1.scala" -> Set((535, 557)))
+//      case "_t4365" => Map("a_1.scala" -> Set((535, 557)))
       case "_t5545" => Map("S_2.scala" -> Set((64, 66)), "S_1.scala" -> Set((64, 66)))
       case "_t6169" => Map("skinnable.scala" -> Set(), "t6169.scala" -> Set())
       case "_t8497" => Map("A_1.scala" -> Set())
@@ -63,7 +63,7 @@ class FailedScalacTests extends FailedScalacTestsBase {
 
   //Delete test method and move corresponding .scala file or directory to testdata/scalacTests/pos/ after test passes
 
-  def test_t4365(): Unit = doTest()
+//  def test_t4365(): Unit = doTest()
   def test_t5545(): Unit = doTest()
   def test_t6169(): Unit = doTest()
   def test_t7232c(): Unit = doTest()
