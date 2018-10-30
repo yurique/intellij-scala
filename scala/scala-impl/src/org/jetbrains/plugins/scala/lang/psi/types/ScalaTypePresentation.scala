@@ -13,7 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements._
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params.{ScParameter, ScTypeParam}
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScTypedDefinition
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScObject, ScTypeDefinition}
-import org.jetbrains.plugins.scala.lang.psi.light.scala.{ScLightBindingPattern, ScLightFunction}
+import org.jetbrains.plugins.scala.lang.psi.light.scala.{ScLightBindingPattern, ScLightFunction, ScLightTypeAlias}
 import org.jetbrains.plugins.scala.lang.psi.types.api._
 import org.jetbrains.plugins.scala.lang.psi.types.api.designator.{ScDesignatorType, ScProjectionType, ScThisType}
 import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.{ScMethodType, ScTypePolymorphicType}
@@ -144,8 +144,8 @@ trait ScalaTypePresentation extends api.TypePresentation {
               case _ => Seq.empty
             }
           }
-        case (_: String, sign: TypeAliasSignature) =>
-          val ta = ScTypeAlias.getCompoundCopy(sign, sign.ta)
+        case (_: String, signature: TypeAliasSignature) =>
+          val ta = ScLightTypeAlias(signature)
           val defnText: String = ta match {
             case tad: ScTypeAliasDefinition =>
               tad.aliasedType.toOption

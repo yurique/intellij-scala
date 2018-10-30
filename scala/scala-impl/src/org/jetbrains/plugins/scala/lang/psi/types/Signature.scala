@@ -12,6 +12,7 @@ import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScParameters
 import org.jetbrains.plugins.scala.lang.psi.api.statements.{ScFunction, ScTypeAlias, ScTypeAliasDefinition}
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScTypedDefinition
+import org.jetbrains.plugins.scala.lang.psi.light.scala.ScLightTypeAlias
 import org.jetbrains.plugins.scala.lang.psi.types.api.{Any, PsiTypeParamatersExt, TypeParameter, Variance}
 import org.jetbrains.plugins.scala.lang.psi.types.recursiveUpdate.ScSubstitutor
 import org.jetbrains.plugins.scala.lang.psi.types.result._
@@ -29,23 +30,18 @@ case class TypeAliasSignature(name: String,
 
   override implicit def projectContext: ProjectContext = ta.projectContext
 
-  def updateTypes(fun: ScType => ScType): TypeAliasSignature = TypeAliasSignature(name,
+  def updateTypes(fun: ScType => ScType): TypeAliasSignature = map(
     typeParams.map(_.update(fun)),
     fun(lowerBound),
     fun(upperBound),
-    isDefinition,
-    ta)
-    .copyWithCompoundBody
+  )
 
-  def updateTypesWithVariance(function: (ScType, Variance) => ScType, variance: Variance): TypeAliasSignature = TypeAliasSignature(name,
+  def updateTypesWithVariance(function: (ScType, Variance) => ScType,
+                              variance: Variance): TypeAliasSignature = map(
     typeParams.map(_.updateWithVariance(function, variance)),
     function(lowerBound, variance),
     function(upperBound, -variance),
-    isDefinition,
-    ta)
-    .copyWithCompoundBody
-
-  private def copyWithCompoundBody = copy(ta = ScTypeAlias.getCompoundCopy(this, ta))
+  )
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[TypeAliasSignature]
 
@@ -67,10 +63,16 @@ case class TypeAliasSignature(name: String,
     case definition: ScTypeAliasDefinition => definition.aliasedType.toOption
     case _ => None
   }
+
+  private def map(typeParams: Seq[TypeParameter],
+                  lowerBound: ScType,
+                  upperBound: ScType) =
+    TypeAliasSignature(name, typeParams, lowerBound, upperBound, isDefinition, ScLightTypeAlias(this))
 }
 
 object TypeAliasSignature {
-  def apply(typeAlias: ScTypeAlias): TypeAliasSignature = TypeAliasSignature(typeAlias.name,
+  def apply(typeAlias: ScTypeAlias): TypeAliasSignature = TypeAliasSignature(
+    typeAlias.name,
     typeAlias.typeParameters.map(TypeParameter(_)),
     typeAlias.lowerBound.getOrNothing,
     typeAlias.upperBound.getOrAny,

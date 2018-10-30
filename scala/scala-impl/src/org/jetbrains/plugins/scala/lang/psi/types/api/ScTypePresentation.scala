@@ -9,7 +9,7 @@ import org.jetbrains.plugins.scala.lang.psi.ScalaPsiUtil
 import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScRefinement
 import org.jetbrains.plugins.scala.lang.psi.api.statements.{ScTypeAliasDeclaration, ScTypeAliasDefinition}
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{ScMember, ScObject}
-import org.jetbrains.plugins.scala.lang.psi.light.scala.ScLightTypeAliasDefinition
+import org.jetbrains.plugins.scala.lang.psi.light.scala.ScLightTypeAlias
 import org.jetbrains.plugins.scala.lang.psi.types.result.TypeResult
 import org.jetbrains.plugins.scala.lang.psi.types.{ScType, ScTypeExt, TypePresentationContext}
 import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
@@ -85,9 +85,8 @@ object ScTypePresentation {
   }
 
   def shouldExpand(ta: ScTypeAliasDefinition): Boolean = ta match {
-    case _: ScLightTypeAliasDefinition | childOf(_, _: ScRefinement) => true
-    case _ =>
-      ScalaPsiUtil.superTypeMembers(ta).exists(_.isInstanceOf[ScTypeAliasDeclaration])
+    case _: ScLightTypeAlias[_] | childOf(_, _: ScRefinement) => true
+    case _ => ScalaPsiUtil.superTypeMembers(ta).exists(_.isInstanceOf[ScTypeAliasDeclaration])
   }
 
   def withoutAliases(`type`: ScType)
